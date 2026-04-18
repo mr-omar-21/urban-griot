@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Store items for the Urban Griot shop.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Display name of the product" },
+        "sku": { "type": "string", "description": "Unique SKU for the product" },
+        "price": { "type": "number", "description": "Price in USD" },
+        "category": { "type": "string", "enum": ["TEES", "HOODIES", "TOTES", "ARCHIVE"], "description": "Product category" },
+        "imageUrl": { "type": "string", "description": "URL to product image" },
+        "description": { "type": "string", "description": "Product description" },
+        "isLimited": { "type": "boolean", "description": "Whether the product is a limited drop" },
+        "isBestseller": { "type": "boolean", "description": "Whether the product is a bestseller" },
+        "isNew": { "type": "boolean", "description": "Whether the product is a new drop" },
+        "stockStatus": { "type": "string", "enum": ["IN_STOCK", "SOLD_OUT", "RESTOCKING"], "description": "Availability status" }
+      },
+      "required": ["name", "sku", "price", "category", "imageUrl"]
+    },
+    "VaultEntry": {
+      "title": "Vault Entry",
+      "description": "Community authenticated street photography and tags.",
+      "type": "object",
+      "properties": {
+        "imageUrl": { "type": "string", "description": "URL to the street photo" },
+        "handle": { "type": "string", "description": "Social media handle of the contributor" }
+      },
+      "required": ["imageUrl", "handle"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Products available in the shop."
+    },
+    "/vault/{entryId}": {
+      "schema": "VaultEntry",
+      "description": "Community submissions for 'The Vault'."
+    }
+  }
+}

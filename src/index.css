@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  
+  --color-surface: #0e0e0e;
+  --color-surface-low: #131313;
+  --color-surface-high: #201f1f;
+  --color-primary: #ff9069;
+  --color-primary-dim: #fe5e1e;
+  --color-secondary: #15ffd1;
+  --color-tertiary: #e06dff;
+}
+
+@layer base {
+  body {
+    @apply bg-surface text-white font-sans selection:bg-primary selection:text-black antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+    cursor: crosshair;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display uppercase tracking-tight;
+  }
+
+  * {
+    @apply border-0 rounded-none transition-all duration-300 ease-in-out;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-black px-8 py-3 font-display font-bold uppercase tracking-wider hover:bg-primary-dim active:scale-95;
+  }
+
+  .btn-outline {
+    @apply border-2 border-secondary text-secondary px-8 py-3 font-display font-bold uppercase tracking-wider hover:bg-secondary hover:text-black active:scale-95;
+  }
+
+  .card-brutal {
+    @apply bg-surface-high p-4 relative overflow-hidden;
+  }
+
+  .input-stencil {
+    @apply bg-surface-high/50 border-b-2 border-white/20 px-4 py-2 focus:border-secondary focus:outline-none focus:bg-surface-high;
+  }
+
+  /* Glassmorphism */
+  .glass {
+    @apply bg-surface/70 backdrop-blur-xl border-white/5;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 1px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-surface;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/20;
+}
+
