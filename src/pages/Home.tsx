@@ -48,9 +48,9 @@ export default function Home() {
       {/* HERO SECTION */}
       <section className="relative h-[80vh] flex items-center px-6 md:px-12 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
-          <img 
+          <img
             referrerPolicy="no-referrer"
-            src="https://picsum.photos/seed/urbanhero/1920/1080?grayscale" 
+            src="https://picsum.photos/seed/urbanhero/1920/1080?grayscale"
             className="w-full h-full object-cover"
             alt="Urban Context"
           />
@@ -58,7 +58,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 max-w-2xl">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -66,16 +66,16 @@ export default function Home() {
           >
             NEW DROP: KITENGE X GRAFFITI
           </motion.div>
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-7xl md:text-9xl font-black mb-4 leading-[0.85]"
+            className="text-8xl md:text-9xl font-black mb-4 leading-[0.85]"
           >
-            URBAN <br/>
-            <span className="text-transparent border-text stroke-primary" style={{ WebkitTextStroke: '2px #ff9069' }}>GRIOT</span>
+            URBAN <br />
+            <span className="text-transparent border-text stroke-primary" style={{ WebkitTextStroke: '2px #ff9069' }}>GRIOTS</span>
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -108,7 +108,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-0 border-t border-l border-white/5">
           {products.map((product) => (
-            <motion.div 
+            <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -116,9 +116,9 @@ export default function Home() {
               className="border-r border-b border-white/5 card-brutal p-8 hover:bg-surface-low transition-all"
             >
               <div className="relative aspect-[4/5] mb-8 overflow-hidden">
-                <img 
+                <img
                   referrerPolicy="no-referrer"
-                  src={product.imageUrl} 
+                  src={product.imageUrl}
                   alt={product.name}
                   className="w-full h-full object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-700"
                 />
@@ -133,13 +133,13 @@ export default function Home() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex justify-between items-start mb-2">
                 <h3 className="text-2xl max-w-[70%]">{product.name}</h3>
                 <p className="text-primary text-xl font-display font-black">${product.price}</p>
               </div>
               <p className="text-[10px] text-white/40 mb-6 font-mono tracking-widest">SKU: {product.sku}</p>
-              
+
               <button className="flex items-center justify-center w-12 h-12 bg-white text-black hover:bg-primary transition-colors ml-auto group hover:scale-110 active:scale-95">
                 <ShoppingCart className="w-5 h-5 group-hover:scale-110" />
               </button>
@@ -157,15 +157,15 @@ export default function Home() {
             <motion.img whileHover={{ scale: 1.05 }} transition={{ duration: 0.5 }} referrerPolicy="no-referrer" src="https://picsum.photos/seed/m3/600/600?grayscale" className="w-full h-[60%] object-cover grayscale opacity-60 hover:opacity-100 hover:grayscale-0" />
           </div>
         </div>
-        
+
         <div className="flex-1 max-w-xl">
           <p className="text-tertiary text-[10px] font-bold tracking-[0.4em] mb-6 uppercase">MANIFESTO</p>
-          <h2 className="text-6xl md:text-8xl mb-8 leading-[0.9]">THE FUSION OF <br/> <span className="text-secondary">CONCRETE & CLOTH</span></h2>
+          <h2 className="text-6xl md:text-8xl mb-8 leading-[0.9]">THE FUSION OF <br /> <span className="text-secondary">CONCRETE & CLOTH</span></h2>
           <div className="space-y-6 text-white/60 leading-relax">
             <p>In the heart of Dar Es Salaam, the stories aren't just told—they are painted on the walls and woven into the fabric. Urban Griot is the nexus where ancestral Kitenge geometry meets the raw energy of street graffiti.</p>
             <p>We don't create fashion. We document the evolution of a city in motion.</p>
           </div>
-          
+
           <div className="mt-12 p-8 bg-surface-high border-l-4 border-primary italic text-white/80">
             "We don't just sell clothes; we document the evolution of the city's spirit."
             <p className="mt-4 not-italic font-display text-primary text-sm font-bold">— MSANII X, Lead Designer</p>
@@ -182,16 +182,16 @@ export default function Home() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {vault.map((entry, i) => (
-            <motion.div 
+            <motion.div
               key={entry.id}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.1 }}
               className="relative group aspect-square overflow-hidden"
             >
-              <img 
+              <img
                 referrerPolicy="no-referrer"
-                src={entry.imageUrl} 
+                src={entry.imageUrl}
                 className="w-full h-full object-cover grayscale hover:grayscale-0 contrast-125 transition-all duration-500 hover:scale-110"
                 alt="Vault Entry"
               />
