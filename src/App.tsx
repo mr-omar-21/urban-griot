@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { 
@@ -12,7 +12,11 @@ import {
   HelpCircle,
   MessageCircle,
   Send,
-  Loader2
+  Loader2,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { ChatMessage } from './types';
 import { GoogleGenAI } from "@google/genai";
@@ -21,6 +25,10 @@ import Home from './pages/Home';
 import Archive from './pages/Archive';
 import Stories from './pages/Stories';
 import WelcomeScreen from './components/WelcomeScreen';
+
+const drakeSong = new URL('../Drake - Whisper My Name.mp3', import.meta.url).href;
+
+
 
 // --- Components ---
 
@@ -203,19 +211,213 @@ function AnimatedRoutes() {
   
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />} />
-        <Route path="/archive" element={<Archive />} />
-        <Route path="/stories" element={<Stories />} />
-      </Routes>
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/archive" element={<Archive />} />
+          <Route path="/stories" element={<Stories />} />
+        </Routes>
+      </motion.div>
     </AnimatePresence>
   );
 }
 
+
+interface AudioPlayerProps {
+  isPlaying: boolean;
+  isMuted: boolean;
+  togglePlay: () => void;
+  toggleMute: () => void;
+  currentTime: number;
+  duration: number;
+  onSeek: (time: number) => void;
+}
+
+function AudioPlayer({ 
+  isPlaying, 
+  isMuted, 
+  togglePlay, 
+  toggleMute, 
+  currentTime, 
+  duration,
+  onSeek
+}: AudioPlayerProps) {
+  const progressBarRef = useRef<HTMLDivElement>(null);
+
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return '0:00';
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!progressBarRef.current || duration === 0) return;
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const width = rect.width;
+    const clickPercentage = clickX / width;
+    const targetTime = clickPercentage * duration;
+    onSeek(targetTime);
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 50, scale: 0.95 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed bottom-8 left-8 lg:left-72 z-[90] glass border border-white/10 p-4 flex flex-col gap-2 w-72 md:w-80 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden"
+    >
+      <div className="flex items-center justify-between gap-4">
+        {/* Equalizer Visualizer & Info */}
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className="flex items-end gap-[3px] h-6 w-8 shrink-0">
+            <span className={`w-[3px] bg-primary rounded-t-sm ${isPlaying ? 'animate-eq-1' : 'h-1'}`} style={{ transformOrigin: 'bottom' }} />
+            <span className={`w-[3px] bg-primary rounded-t-sm ${isPlaying ? 'animate-eq-2' : 'h-2'}`} style={{ transformOrigin: 'bottom' }} />
+            <span className={`w-[3px] bg-primary rounded-t-sm ${isPlaying ? 'animate-eq-3' : 'h-1.5'}`} style={{ transformOrigin: 'bottom' }} />
+            <span className={`w-[3px] bg-primary rounded-t-sm ${isPlaying ? 'animate-eq-4' : 'h-2.5'}`} style={{ transformOrigin: 'bottom' }} />
+            <span className={`w-[3px] bg-primary rounded-t-sm ${isPlaying ? 'animate-eq-5' : 'h-1'}`} style={{ transformOrigin: 'bottom' }} />
+          </div>
+          
+          <div className="flex flex-col overflow-hidden">
+            <span className="text-[9px] text-white/40 tracking-widest font-black uppercase font-display leading-none mb-1">STREET RADIO_v1</span>
+            <div className="relative w-36 md:w-40 overflow-hidden h-4">
+              <span className="absolute whitespace-nowrap text-xs font-display font-bold tracking-widest text-primary animate-[marquee_10s_linear_infinite]">
+                DRAKE - WHISPER MY NAME &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DRAKE - WHISPER MY NAME
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button 
+            onClick={toggleMute}
+            className="p-2 hover:bg-white/5 text-white/70 hover:text-white transition-colors cursor-pointer"
+            title={isMuted ? "Unmute" : "Mute"}
+          >
+            {isMuted ? <VolumeX className="w-4 h-4 text-secondary" /> : <Volume2 className="w-4 h-4" />}
+          </button>
+          
+          <button 
+            onClick={togglePlay}
+            className="p-2.5 bg-primary text-black hover:bg-primary-dim transition-colors cursor-pointer"
+            title={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Progress & Time */}
+      <div className="flex items-center justify-between text-[9px] font-bold text-white/40 tracking-wider mt-1 select-none">
+        <span>{formatTime(currentTime)}</span>
+        <span>{formatTime(duration)}</span>
+      </div>
+
+      {/* Progress Bar Container */}
+      <div 
+        ref={progressBarRef}
+        onClick={handleProgressBarClick}
+        className="relative w-full h-[4px] bg-white/10 mt-1 cursor-pointer group"
+      >
+        <div 
+          className="h-full bg-primary relative transition-all duration-100 ease-out" 
+          style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
+        >
+          {/* Glowing cursor dot on hover */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function App() {
+  const [hasEntered, setHasEntered] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const handleEnter = () => {
+    setHasEntered(true);
+    if (audioRef.current) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(err => {
+        console.warn("Audio play failed: ", err);
+      });
+    }
+  };
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(err => {
+        console.warn("Audio play failed: ", err);
+      });
+    }
+  };
+
+  const toggleMute = () => {
+    if (!audioRef.current) return;
+    const nextMuted = !isMuted;
+    audioRef.current.muted = nextMuted;
+    setIsMuted(nextMuted);
+  };
+
+  const handleSeek = (targetTime: number) => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = targetTime;
+    setCurrentTime(targetTime);
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
   return (
     <Router>
-      <WelcomeScreen />
+      <WelcomeScreen onEnter={handleEnter} />
+      <audio ref={audioRef} src={drakeSong} preload="auto" loop />
       <div className="min-h-screen bg-surface selection:bg-primary selection:text-black">
         <Navbar />
         <Sidebar />
@@ -246,7 +448,23 @@ export default function App() {
         </main>
 
         <ChatBot />
+
+        {/* Dynamic global audio player shown after entering */}
+        <AnimatePresence>
+          {hasEntered && (
+            <AudioPlayer 
+              isPlaying={isPlaying}
+              isMuted={isMuted}
+              togglePlay={togglePlay}
+              toggleMute={toggleMute}
+              currentTime={currentTime}
+              duration={duration}
+              onSeek={handleSeek}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </Router>
   );
 }
+

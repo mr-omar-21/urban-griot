@@ -1,34 +1,15 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
-export default function WelcomeScreen() {
+interface WelcomeScreenProps {
+  onEnter: () => void;
+}
+
+export default function WelcomeScreen({ onEnter }: WelcomeScreenProps) {
   const [isVisible, setIsVisible] = useState(true);
 
   const handleEnter = () => {
-    try {
-      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-      const ctx = new AudioContext();
-      
-      const osc = ctx.createOscillator();
-      const gainNode = ctx.createGain();
-      
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(220, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 1.5);
-      
-      gainNode.gain.setValueAtTime(0, ctx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.1);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1.5);
-      
-      osc.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      
-      osc.start();
-      osc.stop(ctx.currentTime + 1.5);
-    } catch (e) {
-      console.warn("Audio not supported or blocked", e);
-    }
-
+    onEnter();
     setIsVisible(false);
   };
 
@@ -44,9 +25,9 @@ export default function WelcomeScreen() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1 }}
-            className="text-5xl md:text-7xl font-black font-display tracking-tighter mb-8"
+            className="text-5xl md:text-8xl font-black font-display tracking-tighter mb-8"
           >
-            URBAN GRIOT
+            URBAN GRIOTs
           </motion.h1>
           <motion.button 
             initial={{ y: 20, opacity: 0 }}
@@ -62,3 +43,4 @@ export default function WelcomeScreen() {
     </AnimatePresence>
   );
 }
+

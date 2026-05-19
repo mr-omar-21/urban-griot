@@ -38,3 +38,4 @@ export interface ArchiveEntry {
   description: string;
   imageUrl: string;
 }
+
